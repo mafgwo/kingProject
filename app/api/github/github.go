@@ -33,6 +33,11 @@ func (c *C) HandleGithubWebhook(r *ghttp.Request) {
         if !pusher.IsNil() {
             action = "push"
         }
+        // comment判断
+        comment := j.GetJson("comment")
+        if !comment.IsNil() {
+            action = "comment"
+        }
         // 通用
         sender := j.GetJson("sender")
         login := sender.GetString("login")
@@ -43,38 +48,44 @@ func (c *C) HandleGithubWebhook(r *ghttp.Request) {
         case action == "deleted":
             wechatContent := gstr.Join([]string{login, " 取消关注了 ", repositoryName, "\n地址是：", html_url, "\n", gtime.Now().String()}, "")
             utils.SendWechat(wechatContent)
-            dingdingContent := `{"msgtype":"text","text":{"content":"来自云空\n` + wechatContent + ` "}}`
+            dingdingContent := `{"msgtype":"text","text":{"content":"来自Github\n` + wechatContent + ` "}}`
             utils.SendDingDing(dingdingContent)
             fmt.Println(wechatContent)
         case action == "started":
             wechatContent := gstr.Join([]string{login, " star了 ", repositoryName, "\n地址是：", html_url, "\n", gtime.Now().String()}, "")
             utils.SendWechat(wechatContent)
-            dingdingContent := `{"msgtype":"text","text":{"content":"来自云空\n` + wechatContent + ` "}}`
+            dingdingContent := `{"msgtype":"text","text":{"content":"来自Github\n` + wechatContent + ` "}}`
             utils.SendDingDing(dingdingContent)
             fmt.Println(wechatContent)
         case action == "fork":
             wechatContent := gstr.Join([]string{login, " fork了 ", repositoryName, "\n地址是：", html_url, "\n", gtime.Now().String()}, "")
             utils.SendWechat(wechatContent)
-            dingdingContent := `{"msgtype":"text","text":{"content":"来自云空\n` + wechatContent + ` "}}`
+            dingdingContent := `{"msgtype":"text","text":{"content":"来自Github\n` + wechatContent + ` "}}`
             utils.SendDingDing(dingdingContent)
             fmt.Println(wechatContent)
             fmt.Println(wechatContent)
         case action == "push":
             wechatContent := gstr.Join([]string{login, " push了 ", repositoryName, "\n地址是：", html_url, "\n", gtime.Now().String()}, "")
             utils.SendWechat(wechatContent)
-            dingdingContent := `{"msgtype":"text","text":{"content":"来自云空\n` + wechatContent + ` "}}`
+            dingdingContent := `{"msgtype":"text","text":{"content":"来自Github\n` + wechatContent + ` "}}`
             utils.SendDingDing(dingdingContent)
             fmt.Println(wechatContent)
         case action == "ping":
             wechatContent := gstr.Join([]string{repositoryName, " 成功接入了事件通知\n操作者：", login, "\n", gtime.Now().String()}, "")
             utils.SendWechat(wechatContent)
-            dingdingContent := `{"msgtype":"text","text":{"content":"来自云空\n` + wechatContent + ` "}}`
+            dingdingContent := `{"msgtype":"text","text":{"content":"来自Github\n` + wechatContent + ` "}}`
+            utils.SendDingDing(dingdingContent)
+            fmt.Println(wechatContent)
+        case action == "comment":
+            wechatContent := gstr.Join([]string{login, " comment了 ", repositoryName, "\n地址是：", html_url, "\n", gtime.Now().String()}, "\n评论内容：", comment.GetString("body"))
+            utils.SendWechat(wechatContent)
+            dingdingContent := `{"msgtype":"text","text":{"content":"来自Github\n` + wechatContent + ` "}}`
             utils.SendDingDing(dingdingContent)
             fmt.Println(wechatContent)
         default:
             wechatContent := gstr.Join([]string{login, " 操作了 ", repositoryName, "，但不知道是啥操作\n地址是：", html_url, "\n", gtime.Now().String()}, "")
             utils.SendWechat(wechatContent)
-            dingdingContent := `{"msgtype":"text","text":{"content":"来自云空\n` + wechatContent + ` "}}`
+            dingdingContent := `{"msgtype":"text","text":{"content":"来自Github\n` + wechatContent + ` "}}`
             utils.SendDingDing(dingdingContent)
             fmt.Println(wechatContent)
             fmt.Printf(r.GetBodyString())
