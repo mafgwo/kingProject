@@ -77,7 +77,7 @@ func (c *C) HandleGithubWebhook(r *ghttp.Request) {
             utils.SendDingDing(dingdingContent)
             fmt.Println(wechatContent)
         case action == "comment":
-            wechatContent := gstr.Join([]string{login, " comment了 ", repositoryName, "\n地址是：", html_url, "\n", gtime.Now().String()}, "\n评论内容：", comment.GetString("body"))
+            wechatContent := gstr.Join([]string{login, " comment了 ", repositoryName, "\n地址是：", html_url, "\n", gtime.Now().String()}, "\n评论内容：", comment.GetString("body")}, "")
             utils.SendWechat(wechatContent)
             dingdingContent := `{"msgtype":"text","text":{"content":"来自Github\n` + wechatContent + ` "}}`
             utils.SendDingDing(dingdingContent)
