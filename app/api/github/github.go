@@ -51,7 +51,7 @@ func (c *C) HandleGithubWebhook(r *ghttp.Request) {
             dingdingContent := `{"msgtype":"text","text":{"content":"来自Github\n` + wechatContent + ` "}}`
             utils.SendDingDing(dingdingContent)
             fmt.Println(wechatContent)
-        case action == "started":
+        case action == "created":
             wechatContent := gstr.Join([]string{login, " star了 ", repositoryName, "\n地址是：", html_url, "\n", gtime.Now().String()}, "")
             utils.SendWechat(wechatContent)
             dingdingContent := `{"msgtype":"text","text":{"content":"来自Github\n` + wechatContent + ` "}}`
